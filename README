@@ -1,2 +1,7 @@
-Copy the Norduino folder in your arduino-****/libraries/.
-The software has been tested for Arduino 0021 environment.
+In this version I have eliminated the RFM12 dependency
+from the Jeenode Ports libraries.
+At the moment the classes:
+    * class RemotePort
+    * class RemoteNode
+    * class RemoteHandler
+are excluded but the plugs works fine.
