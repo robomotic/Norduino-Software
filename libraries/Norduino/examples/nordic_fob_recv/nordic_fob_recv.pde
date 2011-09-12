@@ -5,13 +5,32 @@
  * Uses the Mirf library
  */
 
-
+//This inlcudes are for the Nordic interface
 #include <Spi.h>
 #include <mirf.h>
 #include <nRF24L01.h>
+//This includes are for the Norduino ports 
+// uses the same as the jeenode
+#include <Ports.h>
+
+Port one (1);
+Port four (4);
+
+//set the address as equal to the keyfob 
+// it's 5 bytes
 byte tx_addr[5] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
+byte rx_addr[5] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
+
+//button status
+byte buttons[4]={0,0,0,0};
 
 void setup(){
+  
+  //set the ports first
+  one.mode(OUTPUT);
+  four.mode(OUTPUT);
+  
+  // setup the serial port for debugging
   Serial.begin(9600);
   
   /*
@@ -21,26 +40,24 @@ void setup(){
   Mirf.init();
   
   /*
-   * Configure reciving address.
+   * Configure receiving address.
    */
    
   Mirf.setRADDR(rx_addr);
   
-  /*
-   * Set the payload length to sizeof(unsigned long) the
-   * return type of millis().
-   *
-   * NB: payload on client and server must be the same.
-   */
-  Mirf.configRegister(RF_SETUP, 0x07); //Air data rate 1Mbit, 0dBm, Setup LNA
-  Mirf.configRegister(EN_AA, 0x00); //Disable auto-acknowledge 
+  //Air data rate 1Mbit, 0dBm, Setup LNA
+  Mirf.configRegister(RF_SETUP, 0x07); 
+  //Disable auto-acknowledge 
+  Mirf.configRegister(EN_AA, 0x00);
+  //The button presses are stored in a 4 byte payload
   Mirf.payload = 4;
+  //The Nordic Keyfobs are setup on channel 2
   Mirf.channel=2;
   
   /*
    * Write channel and payload config then power up reciver.
    */
-   
+
   Mirf.config();
   
   Serial.println("Listening..."); 
@@ -62,21 +79,29 @@ void loop(){
       Serial.println("Got packet");
     
       /*
-       * Get load the packet into the buffer.
+       * Get the paylod into the buffer.
        */
      
       Mirf.getData(data);
-    
-      /*
-       * Set the send address.
-       */
-     
-     
+      
+      /* 
+      * Decode the button press with a switch case
+      */
       switch (data[0]) {
-  	case 0x1D: Serial.println("UP"); break;
-  	case 0x1E: Serial.println("DOWN"); break;
-  	case 0x17: Serial.println("LEFT"); break;
-  	case 0x1B: Serial.println("RIGHT"); break;
+  	case 0x1D: Serial.println("DOWN"); break;
+  	case 0x1E: Serial.println("UP"); break;
+  	case 0x17: 
+          Serial.println("RIGHT");
+          //swap the button status
+          buttons[0]=buttons[0] ^ 1; 
+          one.digiWrite(buttons[0]);
+          break;
+  	case 0x1B: 
+          Serial.println("LEFT"); 
+          //swap the button status
+          buttons[1]=buttons[1] ^ 1; 
+	  four.digiWrite(buttons[1]);
+          break;
   	case 0x0F: Serial.println("CENTER"); break;
   	default: break;
       }
