@@ -691,7 +691,8 @@ uint8_t InfraredPlug::decoder(uint8_t nibbles) {
     }
     return UNKNOWN;
 }
-    
+
+#ifndef NorduinoRF
 void InfraredPlug::send(const uint8_t* data, uint16_t bits) {
     // TODO: switch to an interrupt-driven design
     for (byte i = 0; i < bits; ++i) {
@@ -726,7 +727,7 @@ byte ProximityPlug::getReg(byte reg) const {
     stop();
     return result;
 }
-
+#endif
 // ISR(WDT_vect) { Sleepy::watchdogEvent(); }
 
 static volatile byte watchdogCounter;

@@ -409,6 +409,7 @@ public:
     void heading(int& xaxis, int& yaxis);
 };
 
+#ifndef NorduinoRF
 // interface for the Proximity Plug - see http://jeelabs.org/yp1
 class ProximityPlug : public DeviceI2C {
 public:
@@ -427,6 +428,8 @@ public:
     void setReg(byte reg, byte value) const;
     byte getReg(byte reg) const;
 };
+
+#endif
 
 #ifdef Stream_h // only available in recent Arduino IDE versions
 
