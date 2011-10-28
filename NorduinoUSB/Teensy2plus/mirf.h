@@ -27,6 +27,8 @@
 #ifndef _MIRF_H_
 #define _MIRF_H_
 
+#define TEENSY2
+
 #include <WProgram.h>
 #include <Spi.h>
 
@@ -90,7 +92,7 @@ class Nrf24l {
 		uint8_t csnPin;
 
 		/*
-		 * Interrupt pin for the Nordic module
+		 * Channel 0 - 127 or 0 - 84 in the US.
 		 */
 		uint8_t irqPin;
 		/*

@@ -55,11 +55,22 @@
 Nrf24l Mirf = Nrf24l();
 
 Nrf24l::Nrf24l(){
+  #ifdef TEENSY2
 	cePin = 24;
 	csnPin = 20;
 	channel = 1;
 	payload = 16;
 	irqPin=19;
+  #else
+	cePin = 15;
+	csnPin = 0;
+	channel = 1;
+	payload = 16;
+	irqPin=5;
+	
+  #endif
+	  
+	  
 }
 
 void Nrf24l::transferSync(uint8_t *dataout,uint8_t *datain,uint8_t len){
